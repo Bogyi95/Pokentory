@@ -3,12 +3,13 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<div class="card text-center">
-    <img class="card-img-top" src="/media/placeholder.jpg" alt="Product Image">
-    <h1>Product 1</h1>
+{% for items in items %}
+<div class="card text-center" style="width: 18rem;">
+    <img class="card-img-top" src="/media/picture.png" alt="Product Image">
+    <h1>{{ items.name }}</h1>
     <p class="price">price</p>
     <p>Description</p>
     <p><button>Buy</button></p>
   </div>
-  
+{% endfor %}
 {% endblock %}
