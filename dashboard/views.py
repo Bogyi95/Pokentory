@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from .models import Product, Order
+from .models import Product, Order, Category
 from .forms import ProductForm, OrderForm
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -83,15 +83,23 @@ def product(request):
         'form': form,
         'workers_count': workers_count,
         'orders_count': orders_count,
-        'product_count': product_count
+        'product_count': product_count,
     }
     return render(request, 'dashboard/product.html', context)
 
 @login_required
 def product_user(request):
     items = Product.objects.all()
+    categories = Category.objects.all()
+
+    selected_category = request.GET.get('category')
+    if selected_category:
+        items = items.filter(category__name=selected_category)
+
     context = {
         'items': items,
+        'categories' : categories,
+        'selected_category': selected_category,
     }
     return render(request, 'dashboard/product_user.html', context)
 
