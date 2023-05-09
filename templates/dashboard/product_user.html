@@ -28,7 +28,9 @@
   </p>
   <p>Stock: {{ item.quantity }}</p>
   <p>Price: You can't afford</p>
-  <p><button>Buy</button></p>
+  <p>
+    <a href="{% url 'buy-request' item.id %}"><button class="btn btn-primary" type="button">Buy</button></a>
+  </p>
 </div>
 
 {% endfor %}

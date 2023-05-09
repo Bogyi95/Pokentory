@@ -144,4 +144,18 @@ def order(request):
     }
     return render(request, 'dashboard/order.html', context)
 
-
+def buy_request(request, pk):
+    item = Product.objects.get(id=pk)
+    items = Product.objects.all()
+    categories = Category.objects.all()
+    print("You want to buy : ", item)
+    selected_category = request.GET.get('category')
+    if selected_category:
+        items = items.filter(category__name=selected_category)
+    
+    context= {
+        'item':item,
+        'items':items,
+        'categories':categories,
+    }
+    return render(request, "user/buy_request.html", context)
