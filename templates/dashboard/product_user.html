@@ -1,6 +1,6 @@
 {% extends 'partials/base.html' %}
-{% block title %}Products Page{% endblock %}
-{% load crispy_forms_tags %}
+{% block title %}Product Page{% endblock %}
+{% include 'partials/topnav.html' %}
 
 {% block content %}
 
@@ -29,9 +29,21 @@
   <p>Stock: {{ item.quantity }}</p>
   <p>Price: You can't afford</p>
   <p>
-    <a href="{% url 'buy-request' item.id %}"><button class="btn btn-primary" type="button">Buy</button></a>
+    <form action="{% url 'dashboard-order' %}" method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="product_id" value="{{ item.id }}">
+      <div class="form-group">
+          <label for="order_quantity">Quantity</label>
+          <input type="number" name="order_quantity" class="form-control" id="order_quantity" value="1" min="1" max="{{ item.quantity }}">
+      </div>
+      <button type="submit" class="btn btn-primary">Buy</button>
+    </form>
   </p>
 </div>
 
 {% endfor %}
+
+
+
+
 {% endblock %}

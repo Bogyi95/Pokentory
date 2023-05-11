@@ -130,17 +130,20 @@ def product_update(request, pk):
 
 @login_required
 def order(request):
-    orders = Order.objects.all()
-    orders_count = orders.count()
-    workers_count = User.objects.all().count()
-    product_count = Product.objects.all().count()
-    context = {
-        'orders': orders,
-        'workers_count': workers_count,
-        'orders_count': orders_count,
-        'product_count': product_count
-    }
-    return render(request, 'dashboard/order.html', context)
+    if request.method == 'POST':
+        product_id = request.POST.get('product_id')
+        order_quantity = request.POST.get('order_quantity')
+        product = Product.objects.get(pk=product_id)
+        order = Order.objects.create(
+            product=product,
+            order_quantity=order_quantity,
+            staff=request.user,
+        )
+        product.quantity -= int(order_quantity)
+        product.save()
+        return redirect('dashboard-index')
+
+    return render(request, 'order/.html', {'orders': Order.objects.all()})
 
 def buy_request(request, pk):
     item = Product.objects.get(id=pk)
