@@ -139,6 +139,8 @@ def order(request):
             order_quantity=order_quantity,
             staff=request.user,
         )
+        order_category_names = product.category.all().values_list('name', flat=True)
+        order.category.set(Category.objects.filter(name__in=order_category_names))
         product.quantity -= int(order_quantity)
         product.save()
         return redirect('dashboard-index')
