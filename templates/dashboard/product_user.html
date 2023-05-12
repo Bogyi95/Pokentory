@@ -1,0 +1,50 @@
+{% extends 'partials/base.html' %}
+{% block title %}Product Page{% endblock %}
+{% include 'partials/topnav.html' %}
+
+{% block content %}
+
+<form method="GET">
+  {% csrf_token %}
+  <label for="category">Filter by type:</label>
+  <select id="category" name="category">
+    <option value="">All types</option>
+    {% for category in categories %}
+    <option value="{{ category.name }}">{{ category.name }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit">Filter</button>
+</form>
+
+{% for item in items %}
+
+<div class="card text-center" style="width: 18rem;">
+  <img class="card-img-top" src="{{ item.image.url }}" alt="Pokemon Picture">
+  <h1>{{ item.name }}</h1>
+  <p>type:
+    {% for category in item.category.all %}
+    {{ category.name }}{% if not forloop.last %}, {% endif %}
+    {% endfor %}
+  </p>
+  <p>Stock: {{ item.quantity }}</p>
+  <p>Price: You can't afford</p>
+  <p>
+    <form action="{% url 'dashboard-order' %}" method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="product_id" value="{{ item.id }}">
+      
+      <div class="form-group">
+          <label for="order_quantity">Quantity</label>
+          <input type="number" name="order_quantity" class="form-control" id="order_quantity" value="1" min="1" max="{{ item.quantity }}">
+      </div>
+      <button type="submit" class="btn btn-primary">Buy</button>
+    </form>
+  </p>
+</div>
+
+{% endfor %}
+
+
+
+
+{% endblock %}

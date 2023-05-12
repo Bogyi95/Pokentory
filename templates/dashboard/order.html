@@ -18,7 +18,7 @@
                     <tr class="text-white">
 
                         <th scope="col">Product</th>
-                        <th scope="col">Category</th>
+                        <th scope="col">Type</th>
                         <th scope="col">Quantity</th>
                         <th scope="col">Order by</th>
                         <th scope="col">Date</th>
@@ -28,7 +28,14 @@
                     {% for orders in orders %}
                     <tr>
                         <td>{{ orders.product }}</td>
-                        <td>{{ orders.product.category }}</td>
+                        <td>
+                            {% for category in orders.category.all %}
+                            {{ category.name }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                            {% if not orders.category.all %}
+                            No categories found
+                            {% endif %}
+                        </td> 
                         <td>{{ orders.order_quantity }}</td>
                         <td>
                             {{ orders.staff.username }}
