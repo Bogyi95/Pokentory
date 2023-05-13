@@ -4,12 +4,17 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header bg-info text-white">
-                    Information
+                    Latest Order
                 </div>
                 <div class="card-body">
-                    <marquee behavior="alternate" direction="">
-                        <h3 class="my-4">Kocham Kasiunie</h3>
-                    </marquee>
+                    {% if latest_order %}
+                    <h5>{{ latest_order.product.name }}</h5>
+                    <p>Ordered by {{ latest_order.staff.username }} on {{ latest_order.date }}</p>
+                    <p>Product Category: {{ latest_order.product.categories.all|join:", " }}</p>
+                    <p>Order Quantity: {{ latest_order.order_quantity }}</p>
+                {% else %}
+                    <p>No orders found</p>
+                {% endif %}
                 </div>
             </div>
         </div>
