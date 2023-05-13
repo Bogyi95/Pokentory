@@ -15,6 +15,7 @@ def index(request):
     orders_count = orders.count()
     product_count = products.count()
     workers_count = User.objects.all().count()
+    latest_order = Order.objects.latest('date')
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
@@ -31,6 +32,7 @@ def index(request):
         'workers_count': workers_count,
         'product_count': product_count,
         'orders_count': orders_count,
+        'latest_order': latest_order
     }
     return render(request, 'dashboard/index.html', context)
 
@@ -41,11 +43,13 @@ def staff(request):
     workers_count = workers.count()
     orders_count = Order.objects.all().count()
     product_count = Product.objects.all().count()
+    latest_order = Order.objects.latest('date')
     context = {
         'workers': workers,
         'workers_count': workers_count,
         'orders_count': orders_count,
         'product_count': product_count,
+        'latest_order': latest_order,
     }
     return render(request, 'dashboard/staff.html', context)
 
@@ -66,6 +70,7 @@ def product(request):
     # items = Product.objects.raw('SELECT * FROM dashboard_product')
     workers_count = User.objects.all().count()
     orders_count = Order.objects.all().count()
+    latest_order = Order.objects.latest('date')
 
     if request.method == 'POST':
         form = ProductForm(request.POST)
@@ -83,6 +88,7 @@ def product(request):
         'workers_count': workers_count,
         'orders_count': orders_count,
         'product_count': product_count,
+        'latest_order': latest_order,
     }
     return render(request, 'dashboard/product.html', context)
 
@@ -130,6 +136,20 @@ def product_update(request, pk):
 
 @login_required
 def order(request):
+    product_count = Product.objects.all().count()
+    # items = Product.objects.raw('SELECT * FROM dashboard_product')
+    workers_count = User.objects.all().count()
+    orders_count = Order.objects.all().count()
+    latest_order = Order.objects.latest('date')
+
+    context = {
+        'product_count':product_count,
+        'workers_count':workers_count,
+        'orders_count':orders_count,
+        'orders': Order.objects.all(),
+        'latest_order': latest_order,
+    }
+
     if request.method == 'POST':
         product_id = request.POST.get('product_id')
         order_quantity = request.POST.get('order_quantity')
@@ -145,7 +165,19 @@ def order(request):
         product.save()
         return redirect('dashboard-index')
 
-    return render(request, 'order/.html', {'orders': Order.objects.all()})
+    return render(request, 'dashboard/order.html', context)
+
+def latest_order(request):
+    latest_order = Order.objects.latest('date')
+    print(latest_order)
+
+    context = {
+        'latest_order':latest_order
+    }
+
+    return render(request,context)
+
+
 
 def buy_request(request, pk):
     item = Product.objects.get(id=pk)
