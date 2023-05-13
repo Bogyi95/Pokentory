@@ -10,7 +10,12 @@
                     {% if latest_order %}
                     <h5>{{ latest_order.product.name }}</h5>
                     <p>Ordered by {{ latest_order.staff.username }} on {{ latest_order.date }}</p>
-                    <p>Product Category: {{ latest_order.product.categories.all|join:", " }}</p>
+                    <p>Product Category: 
+                        {% for category in latest_order.category.all %}
+                        {{ category.name }}
+                        {% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </p>
                     <p>Order Quantity: {{ latest_order.order_quantity }}</p>
                 {% else %}
                     <p>No orders found</p>

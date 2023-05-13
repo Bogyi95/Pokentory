@@ -15,7 +15,7 @@ def index(request):
     orders_count = orders.count()
     product_count = products.count()
     workers_count = User.objects.all().count()
-    latest_order = Order.objects.order_by('-date').first()
+    latest_order = Order.objects.latest('date')
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
@@ -32,7 +32,7 @@ def index(request):
         'workers_count': workers_count,
         'product_count': product_count,
         'orders_count': orders_count,
-        'lastest_order': latest_order
+        'latest_order': latest_order
     }
     return render(request, 'dashboard/index.html', context)
 
@@ -43,11 +43,13 @@ def staff(request):
     workers_count = workers.count()
     orders_count = Order.objects.all().count()
     product_count = Product.objects.all().count()
+    latest_order = Order.objects.latest('date')
     context = {
         'workers': workers,
         'workers_count': workers_count,
         'orders_count': orders_count,
         'product_count': product_count,
+        'latest_order': latest_order,
     }
     return render(request, 'dashboard/staff.html', context)
 
@@ -68,6 +70,7 @@ def product(request):
     # items = Product.objects.raw('SELECT * FROM dashboard_product')
     workers_count = User.objects.all().count()
     orders_count = Order.objects.all().count()
+    latest_order = Order.objects.latest('date')
 
     if request.method == 'POST':
         form = ProductForm(request.POST)
@@ -85,6 +88,7 @@ def product(request):
         'workers_count': workers_count,
         'orders_count': orders_count,
         'product_count': product_count,
+        'latest_order': latest_order,
     }
     return render(request, 'dashboard/product.html', context)
 
@@ -136,12 +140,14 @@ def order(request):
     # items = Product.objects.raw('SELECT * FROM dashboard_product')
     workers_count = User.objects.all().count()
     orders_count = Order.objects.all().count()
+    latest_order = Order.objects.latest('date')
 
     context = {
         'product_count':product_count,
         'workers_count':workers_count,
         'orders_count':orders_count,
         'orders': Order.objects.all(),
+        'latest_order': latest_order,
     }
 
     if request.method == 'POST':
